@@ -19,7 +19,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install R packages
-RUN R -e "install.packages(c('tidyverse', 'hal9001', 'dplyr', 'ggplot2', 'caret', 'glmnet', 'ranger'), repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages(c('hal9001', 'dplyr', 'ggplot2', 'caret', 'glmnet', 'ranger'))"
+# v2 install
+RUN R -e "install.packages(c('tidyverse'))"
+# v3 install
+RUN R -e "install.packages(c('doParallel', 'mice', 'xgboost'))"
 
 # Expose RStudio Server port
 EXPOSE 8787
