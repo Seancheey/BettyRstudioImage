@@ -1,17 +1,46 @@
 #!/bin/bash
 
 CONTAINER_NAME=betty-rstudio
-docker rm -f ${CONTAINER_NAME}
-docker run -d \
-  --name ${CONTAINER_NAME} \
-  -p 8787:8787 \
-  -e PASSWORD=xin \
-  --memory="48g" \
-  --memory-swap="-1" \
-  -v /Users/seancheey/unsynced_workspace/RStudioData:/home/rstudio/data \
-  sean/rstudio-v4
 
-ps aux | grep autossh | awk '{print $2}' | head -n 1 | xargs -r kill -9
-autossh -f -M 8788 -N -R 80:localhost:8787 root@108.160.134.13
+# Check if localhost:8787 is open
+if ! nc -z localhost 8787; then
+    echo "Port 8787 is not open, starting docker container..."
+    docker rm -f ${CONTAINER_NAME}
+    docker run -d \
+        --name ${CONTAINER_NAME} \
+        -p 8787:8787 \
+        -e PASSWORD=xin \
+        --memory="48g" \
+        --memory-swap="-1" \
+        -v /Users/seancheey/unsynced_workspace/RStudioData:/home/rstudio/data \
+        sean/rstudio-v4
+else
+    echo "Port 8787 is already open."
+fi
 
-open "http://localhost:8787/"
+# Check if 8.8.8.8 is accessible (Google Public DNS)
+if ! ping -c 1 8.8.8.8 &> /dev/null; then
+    echo "Unable to reach 8.8.8.8, stopping the process."
+    exit 1
+else
+    echo "8.8.8.8 is reachable."
+fi
+
+# Check if rstudio.qi1.co is accessible
+if ! curl -s -L --head --request GET https://rstudio.qi1.co | grep "200" > /dev/null; then
+    echo "rstudio.qi1.co is not accessible. Restarting autossh..."
+
+    # Kill existing autossh session
+    ps aux | grep autossh | awk '{print $2}' | xargs -r kill -9
+
+    # Start new autossh session
+    autossh -f -M 8788 -N -R 80:localhost:8787 root@108.160.134.13
+else
+    echo "rstudio.qi1.co is accessible."
+fi
+
+sleep 2
+
+# Open the RStudio instance in the browser
+# open "https://rstudio.qi1.co/"
+
