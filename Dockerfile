@@ -24,9 +24,9 @@ RUN R -e "install.packages(c('hal9001', 'dplyr', 'ggplot2', 'caret', 'glmnet', '
 RUN R -e "install.packages(c('tidyverse'))"
 # v3 install
 RUN R -e "install.packages(c('doParallel', 'mice', 'xgboost'))"
-
-# Expose RStudio Server port
-EXPOSE 8787
+# v4 install
+RUN apt-get update && apt-get install -y cmake && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN R -e "install.packages(c('mice'))"
 
 # Set default command
 CMD ["/init"]
