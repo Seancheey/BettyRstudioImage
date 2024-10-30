@@ -9,11 +9,12 @@ if ! nc -z localhost 8787; then
     docker run -d \
         --name ${CONTAINER_NAME} \
         -p 8787:8787 \
+        -p 8722:22 \
         -e PASSWORD=xin \
         --memory="48g" \
         --memory-swap="-1" \
         -v /Users/seancheey/unsynced_workspace/RStudioData:/home/rstudio/data \
-        sean/rstudio-v4
+        sean/rstudio-v6
 else
     echo "Port 8787 is already open."
 fi
@@ -35,6 +36,9 @@ if ! curl -s -L --head --request GET https://rstudio.qi1.co | grep "200" > /dev/
 
     # Start new autossh session
     autossh -f -M 8788 -N -R 80:localhost:8787 root@108.160.134.13
+
+    # Start new autossh session
+    autossh -f -N -R 8787:localhost:8722 root@108.160.134.13
 else
     echo "rstudio.qi1.co is accessible."
 fi
