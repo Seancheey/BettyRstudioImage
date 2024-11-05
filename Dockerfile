@@ -44,6 +44,10 @@ RUN echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCvyeab4MBPQCFHhEkMxpB0irUNTgAP0A
 RUN apt-get update && apt-get install -y libgit2-dev && apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN R -e "install.packages(c('devtools'))"
 
+# v7 install
+RUN echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config && \
+    echo "ClientAliveCountMax 1440" >> /etc/ssh/sshd_config
+
 EXPOSE 22
 
 # Set default command

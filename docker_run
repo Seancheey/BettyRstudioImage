@@ -14,7 +14,7 @@ if ! nc -z localhost 8787; then
         --memory="48g" \
         --memory-swap="-1" \
         -v /Users/seancheey/unsynced_workspace/RStudioData:/home/rstudio/data \
-        sean/rstudio-v6
+        sean/rstudio-v7
 else
     echo "Port 8787 is already open."
 fi
