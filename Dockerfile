@@ -48,6 +48,10 @@ RUN R -e "install.packages(c('devtools'))"
 RUN echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config && \
     echo "ClientAliveCountMax 1440" >> /etc/ssh/sshd_config
 
+# v8 install
+RUN apt-get update && apt-get install -y jags r-cran-rjags && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN R -e "install.packages(c('rjags', 'groupWQS'))"
+
 EXPOSE 22
 
 # Set default command
